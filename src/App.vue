@@ -1,10 +1,3 @@
-<template>
-  <span class="telop" :class="{ '-pushed': isPushed }">{{ telop }}</span>
-  <img :src="mainImg" class="main-img" />
-  <button class="btn" @click="handleClick">{{ btnText }}</button>
-  <div v-if="isPushed" class="overlay"></div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 import furiImg from './assets/furi.png'
@@ -17,11 +10,13 @@ const btnText = ref('PUSH')
 
 const handleClick = () => {
   if (isPushed.value) {
+    // リセット
     isPushed.value = false
     telop.value = '絶対に押すなよ!?'
     mainImg.value = furiImg
     btnText.value = 'PUSH'
   } else {
+    // アクション
     isPushed.value = true
     telop.value = 'アチーー!!'
     mainImg.value = ochiImg
@@ -29,3 +24,10 @@ const handleClick = () => {
   }
 }
 </script>
+
+<template>
+  <span class="telop" :class="{ '-pushed': isPushed }">{{ telop }}</span>
+  <img :src="mainImg" class="main-img" />
+  <button class="btn" @click="handleClick">{{ btnText }}</button>
+  <div v-if="isPushed" class="overlay"></div>
+</template>
