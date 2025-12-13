@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const root = process.cwd()
 
   try {
-    const template = fs.readFileSync(path.resolve(root, 'dist/client/index.html'), 'utf-8')
+    const template = fs.readFileSync(path.resolve(root, 'dist/client/template.html'), 'utf-8')
     const manifest = fs.readFileSync(path.resolve(root, 'dist/client/.vite/ssr-manifest.json'), 'utf-8')
 
     // Import the server entry. Note: In a Vercel function, we import the built server entry.

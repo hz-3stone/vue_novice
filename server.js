@@ -13,7 +13,7 @@ async function createServer() {
 
   // Cached production assets
   const templateHtml = isProduction
-    ? fs.readFileSync(path.resolve(__dirname, 'dist/client/index.html'), 'utf-8')
+    ? fs.readFileSync(path.resolve(__dirname, 'dist/client/template.html'), 'utf-8')
     : ''
   const ssrManifest = isProduction
     ? fs.readFileSync(path.resolve(__dirname, 'dist/client/.vite/ssr-manifest.json'), 'utf-8')
