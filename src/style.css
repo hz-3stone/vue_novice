@@ -144,9 +144,33 @@ h1 {
 
 .main-img {
   display: block;
-  width: 384px;
-  height: 384px;
+  width: 100%;
+  max-width: 384px;
+  height: auto;
   margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .telop {
+    font-size: 1.5rem;
+  }
+
+  .program-title {
+    font-size: 0.8rem;
+    right: 10px;
+    top: 10px;
+    padding: 5px 10px;
+  }
+
+  .btn {
+    width: 120px;
+    height: 120px;
+    font-size: 1.2rem;
+  }
 }
 
 .btn {
@@ -201,6 +225,7 @@ h1 {
   0% {
     opacity: .3;
   }
+
   100% {
     opacity: 0;
   }
