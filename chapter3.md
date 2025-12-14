@@ -1,49 +1,65 @@
 # 第三章: 変身！（データの書き換え） 🦸
 
 第二章の答え合わせです！
+クリックイベントの書き方はバッチリですか？
 
-### 📘 第二章の答え
-```javascript
+### 📘 第二章の答え (App.vue)
+```html
+<script setup>
+import { ref } from 'vue'
+import furiImg from './assets/furi.png'
+
+const telop = ref('絶対に押すなよ!?')
+const mainImg = ref(furiImg)
+const btnText = ref('PUSH')
+
+// 関数を追加
 const handleClick = () => {
   console.log('ボタンが押されました！')
 }
-```
-```html
-<button class="btn" @click="handleClick">{{ btnText }}</button>
-```
+</script>
 
-これができれば、クリックイベントはマスターしたも同然です！
+<template>
+  <span class="telop">{{ telop }}</span>
+  <img :src="mainImg" class="main-img" />
+  <!-- @click を追加 -->
+  <button class="btn" @click="handleClick">{{ btnText }}</button>
+</template>
+```
 
 ---
 
 ## 📝 今回のミッション
 
 いよいよ本番です。
-「ボタンが押されたら、文字と画像を変える」という処理を書いていきましょう。
+ボタンが押されたら、文字や画像が変化するようにしましょう。
 
-### 1. 落ちる画像を準備
-まずは新しい画像 `ochi.png` を読み込んでおかないといけません。
-`<script setup>` の一番上で読み込んでください。
+### 💡 例：カウントアップ
+ボタンを押すと数字が増える例を見てみましょう。
 
-```javascript
-import ochiImg from './assets/ochi.png'
-```
-
-### 2. 中身を書き換える
-`handleClick` 関数の中身を書き換えます。
-ここで超重要なルール！⚠️
-
-`ref` で作ったデータの中身をJavaScriptで触るときは、**必ず `.value` をつけます！**
-「箱（ref）の中から中身（value）を取り出す」イメージです。
+**超重要なルール⚠️**:
+`ref` で作ったデータをJavaScriptの中で書き換えるときは、**必ず `.value` をつけます！**
 
 ```javascript
-const handleClick = () => {
-  // データを上書きするよ！（.valueを忘れずに！）
-  telop.value = 'アチーー!!'
-  mainImg.value = ochiImg
-  btnText.value = 'RESET'
+const count = ref(0)
+
+const increment = () => {
+  // × count = count + 1  <- これはダメ
+  // ○ count.value = count.value + 1
+  count.value = count.value + 1
 }
 ```
+「箱（ref）の中から中身（value）を取り出して書き換える」イメージです。
+
+### やること
+
+1. **新しい画像を読み込む**
+    - `assets` フォルダにある `ochi.png` を `ochiImg` という名前で import してください。
+2. **中身を書き換える**
+    - `handleClick` 関数の中で、データを以下のように上書きしてください（`.value` を忘れずに！）。
+        - `telop` → `'アチーー!!'`
+        - `mainImg` → `ochiImg`
+        - `btnText` → `'RESET'`
 
 ---
 
@@ -55,11 +71,7 @@ const handleClick = () => {
 「押すなよ!?」 → 「アチーー!!」
 画像も切り替わりましたか？
 
-おめでとうございます！これが **「リアクティブ（反応する）」** というVue.jsの一番すごいところです✨
-
-でも…あれ？
-「RESET」ボタンになっても、押しても元に戻りませんね。
-一回きりのギャグなんて面白くない！
-次は、何度でも遊べるように「賢い判断」を実装します。
+でも…「RESET」ボタンになっても、押しても元に戻りませんね。
+次は、何度でも遊べるように「状況判断」を実装します。
 
 [👉 第四章へ進む (chapter4.md)](./chapter4.md)

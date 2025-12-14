@@ -1,38 +1,80 @@
 # 第五章: 派手な演出（クラスと条件付き表示） ✨
 
 第四章の答え合わせです！
-`if (isPushed.value)` のように、条件式の中でも `.value` が必要でしたね。
+if文とフラグ（isPushed）を使うことで、アプリに「状態」を持たせることができました。
+
+### 📘 第四章の答え (App.vue)
+```html
+<script setup>
+import { ref } from 'vue'
+import furiImg from './assets/furi.png'
+import ochiImg from './assets/ochi.png'
+
+// フラグを追加
+const isPushed = ref(false)
+
+const telop = ref('絶対に押すなよ!?')
+const mainImg = ref(furiImg)
+const btnText = ref('PUSH')
+
+const handleClick = () => {
+  // 分岐させる
+  if (isPushed.value) {
+    // 元に戻す
+    isPushed.value = false
+    telop.value = '絶対に押すなよ!?'
+    mainImg.value = furiImg
+    btnText.value = 'PUSH'
+  } else {
+    // 押した時の変化
+    isPushed.value = true
+    telop.value = 'アチーー!!'
+    mainImg.value = ochiImg
+    btnText.value = 'RESET'
+  }
+}
+</script>
+
+<template>
+  <span class="telop">{{ telop }}</span>
+  <img :src="mainImg" class="main-img" />
+  <button class="btn" @click="handleClick">{{ btnText }}</button>
+</template>
+```
 
 ---
 
 ## 📝 今回のミッション
 
-機能は完璧ですが、もっと「熱湯風呂感」を出したい！
 CSSにはすでに演出用のクラスが用意してあります。
 Vue.jsを使って、タイミングよくそのクラスをつけてあげましょう。
 
-### 1. 文字を赤く大きくする
-`.telop` クラスに加えて、`.-pushed` というクラスがつくと、文字が赤くなります。
-これを **「isPushed が true のときだけ」** つけたい！
-
-`:class` という機能を使います。
+### 💡 例：「いいね」ボタン
+「いいね」された時だけ、ハートを赤くする（`.active` クラスをつける）例です。
 
 ```html
-<span class="telop" :class="{ '-pushed': isPushed }">{{ telop }}</span>
+<!-- :class="{ クラス名: 条件 }" -->
+<!-- isLiked が true のときだけ、active クラスがつく -->
+<button :class="{ active: isLiked }">
+  いいね！
+</button>
 ```
 
-### 2. 画面をフラッシュさせる
-`.overlay` というクラスを持つ `<div>` を作ると、画面が一瞬赤く光ります。
-でも、普段はずっと消えていてほしいですよね。
-
-**「 isPushed が true のときだけ、このHTMLを登場させる」** という魔法、`v-if` を使います。
-
-`<template>` の一番最後に以下を追加してください。
+そして、条件によって「表示・非表示」を切り替える例です。
 
 ```html
-  <div v-if="isPushed" class="overlay"></div>
-</template>
+<!-- v-if="条件" -->
+<!-- isLiked が true のときだけ、この要素が表示される -->
+<div v-if="isLiked">ありがとう！</div>
 ```
+
+### やること
+
+1. **文字を赤く大きくする**
+    - `.telop` クラスがついている要素に、`isPushed` がオンの時だけ `'-pushed'` クラスがつくようにしてください。
+2. **画面をフラッシュさせる**
+    - `<div class="overlay"></div>` という要素を追加してください。
+    - ただし、この要素は `isPushed` がオンの時だけ表示される（v-if）ようにしてください。
 
 ---
 
@@ -42,8 +84,5 @@ Vue.jsを使って、タイミングよくそのクラスをつけてあげま�
 文字がボンッ！と赤くなり、画面がビカッ！と光れば大成功です🎊
 
 これで、あなたの初めてのVue.jsアプリが完成しました！
-
-### 🎓 最終確認
-思った通りに動かないときは、次のページの「正解コード」と見比べてみてください。
 
 [👉 答え合わせと卒業 (chapter6.md)](./chapter6.md)
