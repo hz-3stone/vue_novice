@@ -1,80 +1,71 @@
-# 第四章: 二重人格（スイッチの作成） 🎭
+# 第四章: 見た目を操る（クラスバインディング） 🎨
 
-第三章の答え合わせです！
-`.value` はつけ忘れなかったですか？最初はみんな忘れるので、動かなかったらまずはそこを疑いましょう！
+---
 
-### 📘 第三章の答え (App.vue)
+### 🐣 「先輩！動きは完璧なんですけど...文字が黒いままで迫力がないです」
+### 🦉 「ふむ、確かに『アチーー!!』と言ってるのに見た目が冷静じゃな。文字の色や動きを変えてやるか」
+### 🐣 「CSSを変えるんですか？でも押したときだけ変えたいんですけど...」
+### 🦉 「そこで **クラスバインディング** の出番じゃ！データの状態に合わせて、CSSのクラスを付けたり外したりできるぞ」
+
+---
+
+## 🎭 クラスを付け替える
+
+Vue.jsでは、`:class` を使うことで、条件に応じてクラスを適用できます。
+
 ```html
-<script setup>
-import { ref } from 'vue'
-import furiImg from './assets/furi.png'
-import ochiImg from './assets/ochi.png' // 追加
-
-const telop = ref('絶対に押すなよ!?')
-const mainImg = ref(furiImg)
-const btnText = ref('PUSH')
-
-const handleClick = () => {
-  // 中身を書き換える（.valueが必要！）
-  telop.value = 'アチーー!!'
-  mainImg.value = ochiImg
-  btnText.value = 'RESET'
-}
-</script>
-
-<template>
-  <span class="telop">{{ telop }}</span>
-  <img :src="mainImg" class="main-img" />
-  <button class="btn" @click="handleClick">{{ btnText }}</button>
-</template>
+<!-- isPushed が true のときだけ '-pushed' クラスがつく -->
+<span :class="{ '-pushed': isPushed }">
+  {{ telop }}
+</span>
 ```
+
+### この書き方の意味
+- **`{ クラス名: 条件 }`** というオブジェクトの形を書きます。
+- 「条件」が `true` なら、左側の「クラス名」がつきます。
+- 「条件」が `false` なら、つきません。
 
 ---
 
 ## 📝 今回のミッション
 
-今は「変化させる」ことしかできません。
-「元に戻す」こともできるようにするには、「今どういう状態か？（押す前？押した後？）」を知る必要があります。
+### 1. CSSクラスを適用する
+`src/App.vue` の `<span class="telop">` を修正して、`isPushed` が `true` のときだけ `-pushed` クラスがつくようにしてください。
 
-### 💡 例：部屋の電気スイッチ
-電気が「ついているか」「消えているか」でやることを変える例です。
+```html
+<span class="telop" :class="{ '-pushed': isPushed }">{{ telop }}</span>
+```
 
-```javascript
-const isOn = ref(false) // スイッチの状態（最初は消えてる）
+CSSファイル（`style.css`）には、すでに以下のスタイルが用意されています。
 
-const toggleLight = () => {
-  // if (条件) { ... } else { ... }
-  if (isOn.value) {
-    // スイッチがついているなら → 消す
-    console.log('電気を消します')
-    isOn.value = false
-  } else {
-    // スイッチが消えているなら → つける
-    console.log('電気をつけます')
-    isOn.value = true
-  }
+```css
+/* -pushed クラスがつくと適用される */
+.telop.-pushed {
+  color: var(--red); /* 赤くなる */
+  animation: push 0.5s ease-in-out; /* 揺れるアニメーション */
 }
 ```
 
-### やること
-
-1. **スイッチ（フラグ）を作る**
-    - `isPushed` という名前で、初期値 `false` のデータを作ってください。
-2. **状況判断する (if/else)**
-    - `handleClick` 関数の中で、`isPushed` が `true` か `false` かで処理を分けてください。
-    - **ON（すでに押されてる）なら**: 元に戻す（文字や画像を最初の状態に戻す。`isPushed` も `false` に戻す）
-    - **OFF（まだ押されてない）なら**: アクションする（文字や画像を `ochiImg` などに変える。`isPushed` を `true` にする）
+### 2. 動作確認
+保存してボタンを押してみましょう。
+文字が赤くなり、ブルブルと震えれば成功です！
 
 ---
 
-## ✅ できたかな？
+## 🚨 ここでハマる！よくある間違いチェック
 
-ブラウザでボタンを連打してみてください。
-PUSH ↔ RESET
-押すなよ ↔ アチー
-行ったり来たりできるようになりましたか？
+### ❌ `class` と `:class` は両方書いていいの？
+- **OKです！**
+- `class="telop"`（常に適用）と `:class="{...}"`（条件付き）は共存できます。両方のクラスが合体して適用されます。
 
-これでアプリとしての機能（ロジック）は完成です！👏
-最後は、見た目の演出を加えて完成させましょう！
+### ❌ アニメーションしない！
+- クラス名にハイフンが入っている場合（`-pushed`）、JavaScriptのオブジェクトのキーとして書くときはクォート `' '` で囲む必要があります。
+  - 正解: `{' -pushed': isPushed }`
+  - 間違い: `{-pushed: isPushed}` （構文エラーになります）
+
+### 🐣 「おおお！震えた！なんか急に完成度上がりましたね！」
+### 🦉 「見た目のフィードバックは重要じゃ。ユーザーに『何かが起きた！』と直感的に伝えられるからな」
+
+---
 
 [👉 第五章へ進む (chapter5.md)](./chapter5.md)

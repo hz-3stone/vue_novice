@@ -1,29 +1,49 @@
-# 第三章: 変身！（データの書き換え） 🦸
+# 第三章: 真実の姿を現す（条件分岐とリアクティブ） 🫣
 
-第二章の答え合わせです！
-クリックイベントの書き方はバッチリですか？
+---
 
-### 📘 第二章の答え (App.vue)
-```html
-<script setup>
-import { ref } from 'vue'
-import furiImg from './assets/furi.png'
+### 🐣 「先輩、ボタンを押したら『RESET』になったんですけど、もう一回押しても元に戻りません...」
+### 🦉 「一度『アチーー!!』になったら、そのままじゃからな。元に戻すには『今どうなっているか』を確認して、処理を分ける必要がある」
+### 🐣 「if文ってやつですね！」
+### 🦉 「その通り！Vue.jsの世界でもJavaScriptのif文がそのまま使えるぞ」
 
-const telop = ref('絶対に押すなよ!?')
-const mainImg = ref(furiImg)
-const btnText = ref('PUSH')
+---
 
-// 関数を追加
+## 🔀 状況によって動きを変える
+
+「押された状態」か「まだ押されていない状態」かによって、ボタンを押したときの動作を変えたいですよね。
+そのために、**フラグ（目印）** を使います。
+
+今回は `isPushed` という変数（ref）がその役割を果たします。
+
+```js
+// true = 押された状態 / false = まだの状態
+const isPushed = ref(false)
+
 const handleClick = () => {
-  console.log('ボタンが押されました！')
+  if (isPushed.value) {
+    // すでに押されているなら、リセットする
+    isPushed.value = false
+    // ...元に戻す処理
+  } else {
+    // まだ押されていないなら、ドカンといってみよう
+    isPushed.value = true
+    // ...アチーー!!にする処理
+  }
 }
-</script>
+```
 
+### 🪄 魔法のスイッチ「v-if」
+
+画面上の要素も、条件によって出したり消したりできます。
+ここで登場するのが **`v-if`** です。
+
+```html
 <template>
-  <span class="telop">{{ telop }}</span>
-  <img :src="mainImg" class="main-img" />
-  <!-- @click を追加 -->
-  <button class="btn" @click="handleClick">{{ btnText }}</button>
+  <!-- isPushed が true のときだけ表示される -->
+  <div v-if="isPushed">
+    <p>押してしまったな...！</p>
+  </div>
 </template>
 ```
 
@@ -31,47 +51,45 @@ const handleClick = () => {
 
 ## 📝 今回のミッション
 
-いよいよ本番です。
-ボタンが押されたら、文字や画像が変化するようにしましょう。
+### 1. ロジックを完成させる
+`handleClick` 関数を修正して、クリックするたびに「通常モード」と「熱湯モード」が切り替わるようにしてください。
 
-### 💡 例：カウントアップ
-ボタンを押すと数字が増える例を見てみましょう。
+- **if (isPushed.value)** のとき（リセット処理）
+  - `telop` → `'絶対に押すなよ!?'`
+  - `mainImg` → `furiImg`
+  - `btnText` → `'PUSH'`
+  - `isPushed` → `false`
 
-**超重要なルール⚠️**:
-`ref` で作ったデータをJavaScriptの中で書き換えるときは、**必ず `.value` をつけます！**
+- **else** のとき（アクション処理）
+  - `telop` → `'アチーー!!'`
+  - `mainImg` → `ochiImg`
+  - `btnText` → `'RESET'`
+  - `isPushed` → `true`
 
-```javascript
-const count = ref(0)
+### 2. 赤い画面（オーバーレイ）を作る
+「アチーー!!」となったときだけ、画面全体を赤くするオーバーレイを表示しましょう。
+スタイルシートに `.overlay` クラスが用意してあります。
 
-const increment = () => {
-  // × count = count + 1  <- これはダメ
-  // ○ count.value = count.value + 1
-  count.value = count.value + 1
-}
+```html
+<!-- isPushed が true のときだけ表示される div を追加 -->
+<div v-if="isPushed" class="overlay"></div>
 ```
-「箱（ref）の中から中身（value）を取り出して書き換える」イメージです。
-
-### やること
-
-1. **新しい画像を読み込む**
-    - `assets` フォルダにある `ochi.png` を `ochiImg` という名前で import してください。
-2. **中身を書き換える**
-    - `handleClick` 関数の中で、データを以下のように上書きしてください（`.value` を忘れずに！）。
-        - `telop` → `'アチーー!!'`
-        - `mainImg` → `ochiImg`
-        - `btnText` → `'RESET'`
+これを `<template>` の最後に追加してください。
 
 ---
 
-## ✅ できたかな？
+## 🚨 ここでハマる！よくある間違いチェック
 
-ブラウザで「PUSH」ボタンを押してみてください。
-コンソールを見る必要はありません。画面が変わりましたか？
+### ❌ エラー：isPushed is not defined
+- `<script setup>` の中で `const isPushed = ref(false)` を定義しましたか？
 
-「押すなよ!?」 → 「アチーー!!」
-画像も切り替わりましたか？
+### ❌ リセットされない！永遠に「アチーー!!」のまま
+- `if` の中で `isPushed.value = false` に戻すのを忘れていませんか？
+- フラグを戻さないと、次も「すでに押されている」と判断されてしまいます。
 
-でも…「RESET」ボタンになっても、押しても元に戻りませんね。
-次は、何度でも遊べるように「状況判断」を実装します。
+### 🐣 「うわっ！画面が赤くなった！びっくりしたー！」
+### 🦉 「ふぉっふぉっふぉ。`v-if` は要素そのものを消したり作ったりする強力な魔法じゃ。タイミングよく使えば効果的な演出ができるぞ」
+
+---
 
 [👉 第四章へ進む (chapter4.md)](./chapter4.md)
