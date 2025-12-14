@@ -9,26 +9,27 @@ HTMLに直接文字を書くと、後で書き換えるのが大変です。
 Vue.jsを使うと、**「データ」と「見た目」**を分けて管理できます。
 
 ### 📝 例：自己紹介アプリを作るとしたら？
-例えば、名前を表示するアプリを作るとします。
+例えば、名前や年齢、画像を表示するアプリを作るとします。
 Vue.jsでは、まず「箱（変数）」を用意して、そこにデータを入れます。
 
 ```html
 <script setup>
 import { ref } from 'vue'
+import dogImg from './assets/dog.png' // 画像を読み込む
 
 // 1. データを用意する
 const name = ref('ポチ')
 const age = ref(3)
+const image = ref(dogImg) // 読み込んだ画像をデータに入れる
 </script>
 
 <template>
   <!-- 2. データを使う -->
   <!-- {{ }} で文字を表示 -->
-  <h1>私の名前は {{ name }} です</h1>
+  <h1>名前: {{ name }} ({{ age }}歳)</h1>
   
   <!-- : をつけると、属性（設定）にデータを使える -->
-  <!-- 例: 画像のパスをデータから設定 -->
-  <img :src="'/images/dog.png'" />
+  <img :src="image" />
 </template>
 ```
 
