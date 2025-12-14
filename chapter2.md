@@ -12,7 +12,7 @@
 ## 👂 イベントを待ち構える「@click」
 
 Webアプリは、ユーザーのアクション（クリック、入力など）に反応して動きます。
-Vue.jsでは、**`@click`** という書き方で、「クリックされたときに実行する関数」を指定できます。
+Vue.jsでは、**`@click`** という書き方で、「クリックされたときに実行する動き」を指定できます。
 
 ```html
 <script setup>
@@ -20,8 +20,9 @@ import { ref } from 'vue'
 
 const count = ref(0)
 
-// クリックされたら動く関数（ロジック）
+// クリックされたら動く「処理のカタマリ」（関数といいます）
 const increment = () => {
+  // ここに書いたことが上から順に実行される
   count.value = count.value + 1
   console.log('ボタンが押されたよ！')
 }
@@ -30,14 +31,17 @@ const increment = () => {
 <template>
   <p>現在のかず: {{ count }}</p>
   
-  <!-- @click="関数名" で関連付ける -->
+  <!-- @click="動かしたい処理の名前" で関連付ける -->
   <button @click="increment">増やす</button>
 </template>
 ```
 
 ### 🧙‍♂️ 解説：ロジックの書き方
-`<script>` の中では、JavaScript（変数の世界）でロジックを書きます。
-`count.value` のように、`ref` の中身を触るときは **`.value`** が必要です！
+`<script>` の中では、具体的な計算や処理の手順（ロジック）を書きます。
+`const 名前 = () => { ... }` というのは、**「あらかじめ処理手順をメモしておく」** ことだと思ってください。
+そのメモの名前を、ボタンの `@click` に指定するのです。
+
+※注意： `count.value` のように、`ref` の中身を触るときは **`.value`** が必要です！
 
 ---
 
@@ -47,11 +51,11 @@ const increment = () => {
 まずは**「クリックされたら変数の値を書き換える」**処理を作ります。
 
 ### 1. ロジック（関数）を作る
-`src/App.vue` の `<script setup>` の中に、`handleClick` という関数を作ってください。
-この関数の中で、以下のようにデータを書き換えます。
+`src/App.vue` の `<script setup>` の中に、`handleClick` という名前で処理のカタマリを作ってください。
+この中で、以下のようにデータを書き換えます。
 
 - `isPushed` という新しい変数を用意（初期値 `false`）
-- ボタンが押されたら...
+- `handleClick` の中身：
   - `telop` を `'アチーー!!'` に変更
   - `isPushed` を `true` に変更
   - `btnText` を `'RESET'` に変更
